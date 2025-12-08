@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Fish</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/home">← Dashboard</a>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h2>Edit Fish: <%= fish.name %></h2>
+        <% if (error) { %>
+            <div class="alert alert-danger">
+                <% Object.values(error).forEach(err => { %>
+                    <div><%= err.message %></div>
+                <% }) %>
+            </div>
+        <% } %>
+
+        <!-- ✅ FILE UPLOAD FORM - enctype REQUIRED -->
+        <form method="POST" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label class="form-label">Name</label>
+                <input type="text" class="form-control" name="name" value="<%= fish.name %>" required>
+            </div>
+            
+            <!-- ✅ CURRENT PHOTO PREVIEW -->
+            <% if (fish.photo) { %>
+                <div class="mb-3">
+                    <label class="form-label">Current Photo:</label>
+                    <img src="<%= fish.photo %>" class="img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;">
+                    <div class="form-text">Current photo will be replaced if new file uploaded</div>
+                </div>
+            <% } %>
+            
+            <!-- ✅ NEW PHOTO UPLOAD (OPTIONAL) -->
+            <div class="mb-3">
+                <label class="form-label">New Photo (optional)</label>
+                <input type="file" class="form-control" name="photo" accept="image/*">
+                <div class="form-text">JPG, PNG, WEBP (Max 10MB) - Leave empty to keep current</div>
+            </div>
+            
+            <!-- ✅ CURRENT VIDEO PREVIEW -->
+            <% if (fish.video) { %>
+                <div class="mb-3">
+                    <label class="form-label">Current Video:</label>
+                    <video width="200" controls class="mt-2">
+                        <source src="<%= fish.video %>" type="video/mp4">
+                    </video>
+                    <div class="form-text">Current video will be replaced if new file uploaded</div>
+                </div>
+            <% } %>
+            
+            <!-- ✅ NEW VIDEO UPLOAD (OPTIONAL) -->
+            <div class="mb-3">
+                <label class="form-label">New Video (optional)</label>
+                <input type="file" class="form-control" name="video" accept="video/*">
+                <div class="form-text">MP4, MOV (Max 10MB) - Leave empty to keep current</div>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Price (₹)</label>
+                <input type="number" class="form-control" name="price" value="<%= fish.price %>" step="0.01" min="0" required>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Type</label>
+                <select class="form-control" name="type" required>
+                    <option value="Freshwater" <%= fish.type === 'Freshwater' ? 'selected' : '' %>>Freshwater</option>
+                    <option value="Saltwater" <%= fish.type === 'Saltwater' ? 'selected' : '' %>>Saltwater</option>
+                    <option value="Goldfish" <%= fish.type === 'Goldfish' ? 'selected' : '' %>>Goldfish</option>
+                    <option value="Tropical" <%= fish.type === 'Tropical' ? 'selected' : '' %>>Tropical</option>
+                </select>
+            </div>
+            
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">📸 Update Fish</button>
+                <a href="/home" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
