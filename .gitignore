@@ -2,7 +2,4 @@ node_modules
 .env
 database
 
-package-lock.json
-package.json
 uploads
-
