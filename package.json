@@ -19,8 +19,6 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.0.0",
     "morgan": "~1.9.1",
-    "multer": "^2.0.2",
-    "razorpay": "^2.9.6",
-    "stripe": "^20.0.0"
+    "multer": "^2.0.2"
   }
 }

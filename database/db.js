@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/aquarium';
+const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/aqua';
 
 mongoose.connect(mongoURI)
   .then(() => console.log('✅ MongoDB Connected'))
