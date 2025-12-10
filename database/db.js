@@ -1,28 +1,20 @@
+// database/db.js
 const mongoose = require('mongoose');
 
 const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/Myaqua';
 
-const options = {
-  serverApi: { version: '1', strict: true, deprecationErrors: true },
-  connectTimeoutMS: 30000,
-  socketTimeoutMS: 45000,
-  // useNewUrlParser and useUnifiedTopology are default in modern mongoose, but safe to include:
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-};
-
 async function connectDB() {
   try {
-    await mongoose.connect(mongoURI, options);
+    await mongoose.connect(mongoURI, {
+      serverApi: { version: '1', strict: true, deprecationErrors: true },
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
     console.log('✅ MongoDB Connected');
   } catch (err) {
     console.error('❌ MongoDB connection error:', err);
-    throw err; // Let caller decide (exit or retry)
+    throw err; // app.js will catch this
   }
 }
 
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-db.once('open', () => console.log('✅ Connected to MongoDB'));
-
-module.exports = { connectDB, db };
+module.exports = connectDB;
