@@ -67,6 +67,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/api', usersRouter);
+// ✅ NO /orders route here - handled by admin router
 
 app.use(function(req, res, next) {
     next(createError(404));
@@ -79,7 +80,6 @@ app.use(function(err, req, res, next) {
     res.render('error');
 });
 
-// ✅ CRITICAL: MongoDB Events
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 db.once('open', async () => {
     console.log('✅ Connected to MongoDB');
@@ -97,12 +97,6 @@ db.once('open', async () => {
     } catch (err) {
         console.error('❌ Error creating admin:', err);
     }
-});
-
-// ✅ CRITICAL: PORT for Render (ADD THIS)
-const port = process.env.PORT || 5000;
-app.listen(port, () => {
-    console.log(`✅ Server running on port ${port}`);
 });
 
 module.exports = app;

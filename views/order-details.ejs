@@ -4,160 +4,540 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>📦 Order Details - Fish Admin</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 30%, #16213e 70%, #0f0f23 100%);
+            background-attachment: fixed;
+            font-family: 'Roboto Mono', monospace;
+            color: #e0e0e0;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background Grid */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,255,255,0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 30s linear infinite;
+            z-index: 1;
+            opacity: 0.4;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Floating Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(0,255,255,0.8) 1px, transparent 1px);
+            border-radius: 50%;
+            animation: float 25s infinite linear;
+        }
+
+        .particle:nth-child(1) { width: 3px; height: 3px; top: 20%; left: 10%; animation-delay: 0s; }
+        .particle:nth-child(2) { width: 2px; height: 2px; top: 60%; right: 20%; animation-delay: 8s; }
+        .particle:nth-child(3) { width: 4px; height: 4px; bottom: 30%; left: 5%; animation-delay: 15s; }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-family: 'Orbitron', monospace;
+            font-weight: 900;
+            font-size: 1.3rem;
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            background: linear-gradient(45deg, #ffffff, #00ffff);
+            transform: translateY(-2px);
+        }
+
+        .nav-link {
+            color: #e0e0e0 !important;
+            font-weight: 500;
+            padding: 0.75rem 1.25rem !important;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            margin: 0 0.25rem;
+        }
+
+        .nav-link:hover {
+            background: rgba(0, 255, 255, 0.1);
+            color: #00ffff !important;
+            transform: translateY(-2px);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Page Header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            background: rgba(20, 20, 45, 0.8);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+        }
+
+        .order-id {
+            font-family: 'Orbitron', monospace;
+            font-weight: 900;
+            font-size: 2.2rem;
+            background: linear-gradient(45deg, #00ffff, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 3px;
+            margin: 0;
+        }
+
+        .btn-back {
+            background: linear-gradient(45deg, #6666ff, #3333cc);
+            border: none;
+            border-radius: 15px;
+            padding: 1rem 2rem;
+            font-weight: 700;
+            font-family: 'Orbitron', monospace;
+            color: #ffffff;
+            box-shadow: 0 8px 25px rgba(102, 102, 255, 0.4);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-back:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 102, 255, 0.6);
+            color: #ffffff !important;
+        }
+
+        /* Info Cards */
+        .info-card {
+            background: rgba(20, 20, 45, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 70px rgba(0, 255, 255, 0.2);
+        }
+
+        .card-header {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            font-size: 1.2rem;
+            padding: 0;
+            margin-bottom: 1.5rem;
+            border: none;
+        }
+
+        .customer-header { color: #00ff88; }
+        .order-header { color: #ffaa00; }
+
+        .info-detail strong {
+            color: #00ffff;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .total-amount {
+            font-family: 'Orbitron', monospace;
+            font-weight: 900;
+            font-size: 2rem;
+            background: linear-gradient(45deg, #00ff88, #00cc66);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .status-badge {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            border: 2px solid;
+        }
+
+        .status-pending { background: rgba(255, 193, 7, 0.2); color: #ffc107; border-color: #ffc107; }
+        .status-shipped { background: rgba(13, 202, 240, 0.2); color: #0dc5f0; border-color: #0dc5f0; }
+        .status-delivered { background: rgba(40, 167, 69, 0.2); color: #28a745; border-color: #28a745; }
+        .status-cancelled { background: rgba(220, 53, 69, 0.2); color: #dc3545; border-color: #dc3545; }
+
+        /* Order Items Table */
+        .items-table {
+            background: rgba(20, 20, 45, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .table-header {
+            background: linear-gradient(90deg, rgba(0, 255, 255, 0.2), rgba(255, 170, 0, 0.2));
+            color: #00ffff;
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 1.5rem 1rem;
+        }
+
+        .table {
+            margin: 0;
+            color: #e0e0e0;
+        }
+
+        .table th {
+            border: none;
+            font-size: 0.95rem;
+        }
+
+        .table td {
+            padding: 1.5rem 1rem;
+            vertical-align: middle;
+            border-color: rgba(0, 255, 255, 0.1);
+        }
+
+        .table tbody tr:hover {
+            background: rgba(0, 255, 255, 0.05);
+        }
+
+        .fish-img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 2px solid rgba(0, 255, 255, 0.4);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .qty-badge {
+            background: linear-gradient(45deg, #6666ff, #3333cc);
+            color: white;
+            font-weight: 700;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+        }
+
+        .item-total {
+            font-family: 'Orbitron', monospace;
+            font-weight: 900;
+            color: #00ff88;
+            font-size: 1.1rem;
+        }
+
+        /* Status Update Form */
+        .status-form {
+            background: rgba(255, 193, 7, 0.1);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 193, 7, 0.4);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .status-select {
+            background: rgba(15, 15, 35, 0.9);
+            border: 2px solid rgba(255, 193, 7, 0.6);
+            border-radius: 15px;
+            color: #ffffff;
+            font-family: 'Roboto Mono', monospace;
+            padding: 1rem 1.5rem;
+            height: 55px;
+        }
+
+        .status-select:focus {
+            border-color: #ffc107;
+            box-shadow: 0 0 20px rgba(255, 193, 7, 0.4);
+        }
+
+        .btn-status {
+            background: linear-gradient(45deg, #00ff88, #00cc66);
+            border: none;
+            border-radius: 15px;
+            padding: 1rem 2.5rem;
+            font-weight: 900;
+            font-family: 'Orbitron', monospace;
+            color: #000;
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.5);
+            height: 55px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-status:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 255, 136, 0.7);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container { padding: 1rem 0.5rem; margin: 1rem auto; }
+            .navbar { padding: 0.8rem 1rem; }
+            .page-header { flex-direction: column; gap: 1.5rem; text-align: center; padding: 1.5rem; }
+            .order-id { font-size: 1.8rem; }
+            .info-card { padding: 1.5rem; margin-bottom: 1.5rem; }
+            .table-responsive { border-radius: 15px; }
+            .status-form { padding: 1.5rem; }
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="/home">
-                <i class="fas fa-fish"></i> Fish Admin
+    <!-- Animated Particles -->
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <a href="/home" class="navbar-brand">
+                <i class="fas fa-fish me-2"></i>Fish Admin
             </a>
-            <div class="navbar-nav ms-auto">
-                <a href="/home" class="nav-link">🏠 Home</a>
-                <a href="/orders" class="nav-link">📦 Orders</a>
-                <a href="/userlist" class="nav-link">👥 Users</a>
-                <a href="/logout" class="nav-link">🚪 Logout</a>
+            <div style="display: flex; gap: 0.5rem;">
+                <a href="/home" class="nav-link"><i class="fas fa-home me-1"></i>Home</a>
+                <a href="/orders" class="nav-link"><i class="fas fa-box me-1"></i>Orders</a>
+                <a href="/userlist" class="nav-link"><i class="fas fa-users me-1"></i>Users</a>
+                <a href="/logout" class="nav-link"><i class="fas fa-sign-out-alt me-1"></i>Logout</a>
             </div>
         </div>
     </nav>
 
-    <div class="container mt-4">
-        <div class="row">
-            <div class="col-12">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2>
-                        <i class="fas fa-receipt"></i> Order #<%= order._id.toString().slice(-8).toUpperCase() %>
-                    </h2>
-                    <a href="/orders" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Back to Orders
-                    </a>
-                </div>
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="order-id">
+                <i class="fas fa-receipt me-2"></i>
+                Order #<%= order._id.toString().slice(-8).toUpperCase() %>
+            </h1>
+            <a href="/orders" class="btn-back">
+                <i class="fas fa-arrow-left"></i>
+                Back to Orders
+            </a>
+        </div>
 
-                <!-- ORDER SUMMARY -->
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header bg-primary text-white">
-                                <i class="fas fa-user"></i> Customer Details
-                            </div>
-                            <div class="card-body">
-                                <p><strong>Name:</strong> <%= order.userId?.name || 'Guest' %></p>
-                                <p><strong>Email:</strong> <%= order.userId?.email || '-' %></p>
-                                <p><strong>Phone:</strong> <%= order.userId?.phone || '-' %></p>
-                                <p><strong>Address:</strong> <%= order.userId?.address || '-' %></p>
-                            </div>
-                        </div>
+        <!-- ORDER SUMMARY -->
+        <div class="row g-4 mb-5">
+            <div class="col-lg-6">
+                <div class="info-card">
+                    <div class="card-header customer-header">
+                        <i class="fas fa-user me-2"></i>Customer Details
                     </div>
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header bg-success text-white">
-                                <i class="fas fa-info-circle"></i> Order Info
-                            </div>
-                            <div class="card-body">
-                                <p><strong>Date:</strong> <%= new Date(order.createdAt).toLocaleString('en-IN') %></p>
-                                <p><strong>Total:</strong> <span class="h5 text-success">₹<%= order.totalAmount.toLocaleString('en-IN') %></span></p>
-                                <p><strong>Status:</strong>
-                                    <span class="badge <%= order.status === 'pending' ? 'bg-warning' : 
-                                                     order.status === 'shipped' ? 'bg-info' : 
-                                                     order.status === 'delivered' ? 'bg-success' : 'bg-secondary' %>">
-                                        <%= order.status.toUpperCase() %>
-                                    </span>
-                                </p>
-                            </div>
-                        </div>
+                    <div class="info-detail">
+                        <p><i class="fas fa-user me-2"></i><strong>Name:</strong> <%= order.userId?.name || 'Guest' %></p>
+                        <p><i class="fas fa-envelope me-2"></i><strong>Email:</strong> <%= order.userId?.email || '-' %></p>
+                        <p><i class="fas fa-phone me-2"></i><strong>Phone:</strong> <%= order.userId?.phone || '-' %></p>
+                        <p><i class="fas fa-map-marker-alt me-2"></i><strong>Address:</strong> <%= order.userId?.address || '-' %></p>
                     </div>
                 </div>
-
-                <!-- ORDER ITEMS -->
-                <div class="card">
-                    <div class="card-header bg-info text-white">
-                        <i class="fas fa-fish"></i> Order Items (<%= order.items.length %>)
+            </div>
+            <div class="col-lg-6">
+                <div class="info-card">
+                    <div class="card-header order-header">
+                        <i class="fas fa-info-circle me-2"></i>Order Info
                     </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Fish</th>
-                                        <th>Qty</th>
-                                        <th>Price</th>
-                                        <th>Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% order.items.forEach(item => { %>
-                                        <tr>
-                                            <td>
-                                                <strong><%= item.fishId?.name || 'Fish' %></strong>
-                                                <% if (item.fishId?.photo) { %>
-                                                    <img src="<%= item.fishId.photo %>" alt="Fish" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;">
-                                                <% } %>
-                                            </td>
-                                            <td><span class="badge bg-primary"><%= item.quantity %></span></td>
-                                            <td>₹<%= item.price.toLocaleString('en-IN') %></td>
-                                            <td><strong>₹<%= (item.price * item.quantity).toLocaleString('en-IN') %></strong></td>
-                                        </tr>
-                                    <% }) %>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- STATUS UPDATE FORM -->
-                <div class="card mt-4">
-                    <div class="card-header bg-warning text-dark">
-                        <i class="fas fa-edit"></i> Update Order Status
-                    </div>
-                    <div class="card-body">
-                        <form id="statusForm" action="/orders/<%= order._id %>/status" method="POST">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <label class="form-label">New Status</label>
-                                    <select name="status" class="form-select" required>
-                                        <option value="pending" <%= order.status === 'pending' ? 'selected' : '' %>>Pending</option>
-                                        <option value="shipped" <%= order.status === 'shipped' ? 'selected' : '' %>>Shipped</option>
-                                        <option value="delivered" <%= order.status === 'delivered' ? 'selected' : '' %>>Delivered</option>
-                                        <option value="cancelled">Cancelled</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-8 d-flex align-items-end">
-                                    <button type="submit" class="btn btn-success">
-                                        <i class="fas fa-save"></i> Update Status
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
+                    <div class="info-detail">
+                        <p><i class="fas fa-calendar me-2"></i><strong>Date:</strong> <%= new Date(order.createdAt).toLocaleString('en-IN') %></p>
+                        <p><i class="fas fa-rupee-sign me-2"></i><strong>Total:</strong> <span class="total-amount">₹<%= order.totalAmount.toLocaleString('en-IN') %></span></p>
+                        <p><i class="fas fa-check-circle me-2"></i><strong>Status:</strong>
+                            <span class="status-badge status-<%= order.status %>">
+                                <%= order.status.toUpperCase() %>
+                            </span>
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- ORDER ITEMS -->
+        <div class="items-table">
+            <div class="table-header">
+                <i class="fas fa-fish me-2"></i>Order Items (<%= order.items.length %>)
+            </div>
+            <div class="table-responsive" style="padding: 0 1rem 1rem;">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-fish me-1"></i>Fish</th>
+                            <th><i class="fas fa-hashtag me-1"></i>Qty</th>
+                            <th><i class="fas fa-rupee-sign me-1"></i>Price</th>
+                            <th><i class="fas fa-calculator me-1"></i>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% order.items.forEach(item => { %>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <% if (item.fishId?.photo) { %>
+                                        <img src="<%= item.fishId.photo %>" alt="Fish" class="fish-img">
+                                    <% } else { %>
+                                        <div class="fish-img" style="background: rgba(0,255,255,0.1); display: flex; align-items: center; justify-content: center; color: rgba(0,255,255,0.5);">
+                                            <i class="fas fa-fish"></i>
+                                        </div>
+                                    <% } %>
+                                    <strong><%= item.fishId?.name || 'Fish' %></strong>
+                                </div>
+                            </td>
+                            <td><span class="qty-badge"><%= item.quantity %></span></td>
+                            <td>₹<%= item.price.toLocaleString('en-IN') %></td>
+                            <td><span class="item-total">₹<%= (item.price * item.quantity).toLocaleString('en-IN') %></span></td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- STATUS UPDATE FORM -->
+        <div class="status-form">
+            <div class="table-header" style="background: rgba(255, 193, 7, 0.2); color: #ffc107; margin: -2rem -2rem 2rem -2rem;">
+                <i class="fas fa-edit me-2"></i>Update Order Status
+            </div>
+            <form id="statusForm" action="/orders/<%= order._id %>/status" method="POST" style="display: flex; gap: 1rem; align-items: end; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 200px;">
+                    <label style="font-family: 'Orbitron', monospace; font-weight: 700; color: #ffc107; margin-bottom: 0.75rem; display: block;">New Status</label>
+                    <select name="status" class="status-select form-select" required>
+                        <option value="pending" <%= order.status === 'pending' ? 'selected' : '' %>>Pending</option>
+                        <option value="shipped" <%= order.status === 'shipped' ? 'selected' : '' %>>Shipped</option>
+                        <option value="delivered" <%= order.status === 'delivered' ? 'selected' : '' %>>Delivered</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-status">
+                    <i class="fas fa-save me-2"></i>Update Status
+                </button>
+            </form>
+        </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // AJAX Status Update
-        document.getElementById('statusForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
+        // AJAX Status Update - ENHANCED
+        document.addEventListener('DOMContentLoaded', function() {
+            const statusForm = document.getElementById('statusForm');
             
-            try {
-                const response = await fetch(`/orders/<%= order._id %>/status`, {
-                    method: 'POST',
-                    body: formData
-                });
-                const result = await response.json();
+            statusForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
                 
-                if (response.ok) {
-                    alert('✅ Status updated successfully!');
-                    location.reload();
-                } else {
-                    alert('❌ Error: ' + result.error);
+                const submitBtn = statusForm.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Updating...';
+                submitBtn.disabled = true;
+                
+                try {
+                    const formData = new FormData(statusForm);
+                    const response = await fetch(`/orders/<%= order._id %>/status`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                        // Update status badge instantly
+                        const statusBadge = document.querySelector('.status-badge');
+                        statusBadge.textContent = result.status.toUpperCase();
+                        statusBadge.className = `status-badge status-${result.status}`;
+                        
+                        // Success animation
+                        statusBadge.style.transform = 'scale(1.1)';
+                        setTimeout(() => statusBadge.style.transform = 'scale(1)', 200);
+                        
+                        // Show success message
+                        const successMsg = document.createElement('div');
+                        successMsg.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(0,255,136,0.9); color: #000; padding: 1rem 2rem; border-radius: 10px; font-weight: bold; z-index: 9999; backdrop-filter: blur(10px);';
+                        successMsg.textContent = '✅ Status updated successfully!';
+                        document.body.appendChild(successMsg);
+                        
+                        setTimeout(() => successMsg.remove(), 3000);
+                    } else {
+                        alert('❌ Error: ' + (result.error || 'Unknown error'));
+                    }
+                } catch (error) {
+                    alert('❌ Network error: ' + error.message);
+                } finally {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
                 }
-            } catch (error) {
-                alert('❌ Network error');
-            }
+            });
+
+            // Smooth page load
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.8s ease';
+            setTimeout(() => document.body.style.opacity = '1', 200);
         });
     </script>
 </body>

@@ -3,30 +3,366 @@
 <head>
     <title>Admin Login</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            background-attachment: fixed;
+            font-family: 'Orbitron', monospace;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background Particles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #00ffff, transparent),
+                radial-gradient(2px 2px at 40px 70px, #ff00ff, transparent),
+                radial-gradient(1px 1px at 90px 40px, #00ff00, transparent),
+                radial-gradient(1px 1px at 130px 80px, #ffff00, transparent);
+            background-repeat: repeat;
+            background-size: 200px 100px;
+            animation: float 20s infinite linear;
+            z-index: 1;
+            opacity: 0.3;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            100% { transform: translateY(-100px) rotate(360deg); }
+        }
+
+        /* PERFECT CENTERED CONTAINER */
+        .main-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Card Styling - PERFECTLY CENTERED */
+        .login-card {
+            background: rgba(15, 15, 25, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 20px;
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.5),
+                0 0 100px rgba(0, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            width: 100%;
+            max-width: 450px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s;
+            opacity: 0;
+        }
+
+        .login-card:hover::before {
+            animation: shine 1.5s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); opacity: 0; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-body {
+            padding: 3rem 2.5rem;
+        }
+
+        /* Title - PERFECT RESPONSIVE */
+        .login-title {
+            font-weight: 900;
+            background: linear-gradient(45deg, #00ffff, #ff00ff, #00ff00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+            margin-bottom: 2.5rem;
+            letter-spacing: 3px;
+            text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+            font-size: clamp(1.8rem, 6vw, 2.5rem);
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 10px #00ffff); }
+            to { filter: drop-shadow(0 0 20px #ff00ff); }
+        }
+
+        /* Error Alert */
+        .alert-danger {
+            background: linear-gradient(90deg, rgba(255, 50, 50, 0.2), rgba(255, 100, 100, 0.1));
+            border: 1px solid rgba(255, 50, 50, 0.4);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            color: #ff6b6b;
+            font-weight: 500;
+            box-shadow: 0 8px 32px rgba(255, 50, 50, 0.1);
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        /* Form Inputs */
+        .form-control {
+            background: rgba(20, 20, 35, 0.8);
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 12px;
+            color: #ffffff;
+            font-family: 'Orbitron', monospace;
+            font-weight: 500;
+            padding: 1.2rem 1.2rem;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(15px);
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
+            font-size: clamp(1rem, 4.5vw, 1.1rem);
+            margin-bottom: 1.25rem;
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 400;
+        }
+
+        .form-control:focus {
+            border-color: #00ffff;
+            box-shadow: 
+                0 0 0 0.2rem rgba(0, 255, 255, 0.25),
+                0 0 30px rgba(0, 255, 255, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            background: rgba(25, 25, 45, 0.95);
+            transform: translateY(-2px);
+            outline: none;
+        }
+
+        /* Submit Button */
+        .login-btn {
+            background: linear-gradient(45deg, #00ffff, #0080ff);
+            border: none;
+            border-radius: 12px;
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            padding: 1.2rem 2rem;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 
+                0 10px 30px rgba(0, 147, 255, 0.4),
+                0 5px 15px rgba(0, 0, 0, 0.3);
+            font-size: clamp(1.05rem, 4.5vw, 1.15rem);
+            width: 100%;
+            text-transform: uppercase;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 20px 40px rgba(0, 147, 255, 0.5),
+                0 0 50px rgba(0, 255, 255, 0.6);
+        }
+
+        .login-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .login-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .login-btn:hover::before {
+            left: 100%;
+        }
+
+        /* Floating Fish Animation */
+        .floating-fish {
+            position: fixed;
+            font-size: clamp(1.8rem, 4vw, 3rem);
+            animation: swim 15s infinite linear;
+            opacity: 0.1;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .floating-fish:nth-child(1) { top: 20%; left: -10%; animation-delay: 0s; }
+        .floating-fish:nth-child(2) { top: 60%; right: -10%; animation-delay: 5s; font-size: clamp(1.5rem, 3vw, 2.2rem); }
+        .floating-fish:nth-child(3) { bottom: 20%; left: -10%; animation-delay: 10s; }
+
+        @keyframes swim {
+            0% { transform: translateX(0) rotate(0deg); }
+            100% { transform: translateX(130vw) rotate(360deg); }
+        }
+
+        /* RESPONSIVE BREAKPOINTS - FIXED CENTERING */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 2rem 1rem;
+                align-items: center !important;
+                justify-content: center !important;
+            }
+            
+            .card-body {
+                padding: 2.5rem 2rem;
+            }
+            
+            .login-title {
+                letter-spacing: 2px;
+                margin-bottom: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-container {
+                padding: 1.5rem 1rem;
+            }
+            
+            .card-body {
+                padding: 2rem 1.5rem;
+            }
+            
+            .floating-fish {
+                opacity: 0.08;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .main-container {
+                padding: 1rem 0.75rem;
+            }
+            
+            .card-body {
+                padding: 1.75rem 1.25rem;
+            }
+        }
+    </style>
 </head>
-<body class="bg-light">
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-4">
-                <div class="card">
+<body>
+    <!-- Floating Fish Elements -->
+    <div class="floating-fish">🐟</div>
+    <div class="floating-fish">🐠</div>
+    <div class="floating-fish">🐡</div>
+
+    <!-- PERFECTLY CENTERED LAYOUT -->
+    <div class="main-container">
+        <div class="row justify-content-center w-100 g-0">
+            <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5 col-xxl-4">
+                <div class="login-card">
                     <div class="card-body">
-                        <h3 class="text-center mb-4">🐟 Fish Admin</h3>
+                        <h1 class="login-title">🐟 Fish Admin</h1>
+                        
                         <% if (error) { %>
                             <div class="alert alert-danger"><%= error %></div>
                         <% } %>
-                        <form method="POST">
-                            <div class="mb-3">
-                                <input type="email" class="form-control" name="email" placeholder="admin@example.com" required>
+                        
+                        <form method="POST" class="needs-validation" novalidate>
+                            <div class="mb-0">
+                                <input 
+                                    type="email" 
+                                    class="form-control" 
+                                    name="email" 
+                                    placeholder="admin@example.com" 
+                                    required
+                                >
                             </div>
-                            <div class="mb-3">
-                                <input type="password" class="form-control" name="password" placeholder="admin123" required>
+                            <div class="mb-0">
+                                <input 
+                                    type="password" 
+                                    class="form-control" 
+                                    name="password" 
+                                    placeholder="admin123" 
+                                    required
+                                >
                             </div>
-                            <button type="submit" class="btn btn-primary w-100">Login</button>
+                            <button type="submit" class="login-btn mt-3">
+                                ACCESS TERMINAL
+                            </button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const card = document.querySelector('.login-card');
+            
+            // Glow animation after load
+            setTimeout(() => {
+                card.style.animation = 'glow 3s ease-in-out infinite alternate';
+            }, 500);
+            
+            // Form validation
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(e) {
+                if (!form.checkValidity()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            });
+
+            // Ensure perfect centering on resize
+            window.addEventListener('resize', function() {
+                document.querySelector('.main-container').style.display = 'flex';
+                setTimeout(() => {
+                    document.querySelector('.main-container').style.display = 'flex';
+                }, 100);
+            });
+        });
+
+        // Prevent iOS zoom
+        document.addEventListener('touchstart', function() {}, true);
+    </script>
 </body>
 </html>

@@ -2,86 +2,524 @@
 <html>
 <head>
     <title>Edit Fish</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 30%, #16213e 70%, #0f0f23 100%);
+            background-attachment: fixed;
+            font-family: 'Roboto Mono', monospace;
+            color: #e0e0e0;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background Grid */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,255,255,0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 30s linear infinite;
+            z-index: 1;
+            opacity: 0.4;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Floating Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(0,255,255,0.8) 1px, transparent 1px);
+            border-radius: 50%;
+            animation: float 25s infinite linear;
+        }
+
+        .particle:nth-child(1) { width: 3px; height: 3px; top: 20%; left: 10%; animation-delay: 0s; }
+        .particle:nth-child(2) { width: 2px; height: 2px; top: 60%; right: 20%; animation-delay: 8s; }
+        .particle:nth-child(3) { width: 4px; height: 4px; bottom: 30%; left: 5%; animation-delay: 15s; }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Pure CSS Navbar */
+        .navbar {
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            font-size: 1.2rem;
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 1px;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand:hover {
+            background: linear-gradient(45deg, #ffffff, #00ffff);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 255, 255, 0.3);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Page Title */
+        .page-title {
+            font-family: 'Orbitron', monospace;
+            font-weight: 900;
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #00ffff, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
+        }
+
+        .fish-name {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            color: #00ffff;
+            font-size: 1.3rem;
+        }
+
+        /* Error Alert */
+        .error-alert {
+            background: rgba(255, 68, 68, 0.15);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 68, 68, 0.4);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            color: #ff8888;
+        }
+
+        /* Form Container */
+        .form-container {
+            background: rgba(20, 20, 45, 0.9);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 25px;
+            padding: 3rem;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Form Group */
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-label {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            color: #00ffff;
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+            display: block;
+            letter-spacing: 1px;
+        }
+
+        /* Form Inputs */
+        .form-input, .form-select {
+            width: 100%;
+            background: rgba(15, 15, 35, 0.8);
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 1.2rem 1.5rem;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1rem;
+            color: #ffffff;
+            transition: all 0.3s ease;
+            height: 55px;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+            background: rgba(15, 15, 35, 0.95);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .form-select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='rgba(0,255,255,0.7)' viewBox='0 0 16 16'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+            background-position: right 1rem center;
+            background-repeat: no-repeat;
+            background-size: 16px;
+            padding-right: 3rem;
+            cursor: pointer;
+            appearance: none;
+        }
+
+        .form-text {
+            font-size: 0.85rem;
+            color: rgba(0, 255, 255, 0.7);
+            margin-top: 0.5rem;
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        /* Media Previews */
+        .media-preview {
+            background: rgba(15, 15, 35, 0.6);
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .preview-image {
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 3px solid rgba(0, 255, 255, 0.4);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .preview-video {
+            width: 300px;
+            max-width: 100%;
+            height: 170px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 3px solid rgba(0, 255, 255, 0.4);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        /* File Inputs */
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-wrapper input[type=file] {
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: linear-gradient(45deg, rgba(0, 191, 255, 0.2), rgba(0, 255, 255, 0.2));
+            border: 2px dashed rgba(0, 255, 255, 0.5);
+            border-radius: 15px;
+            padding: 1.2rem 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            height: 55px;
+            font-family: 'Roboto Mono', monospace;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .file-input-label:hover {
+            background: linear-gradient(45deg, rgba(0, 191, 255, 0.3), rgba(0, 255, 255, 0.3));
+            border-color: #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+        }
+
+        /* Form Buttons */
+        .form-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #00ff88, #00cc66);
+            border: none;
+            border-radius: 20px;
+            padding: 1.2rem 3rem;
+            font-weight: 900;
+            font-size: 1.1rem;
+            font-family: 'Orbitron', monospace;
+            color: #000;
+            box-shadow: 0 12px 35px rgba(0, 255, 136, 0.5);
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            min-width: 220px;
+            justify-content: center;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 50px rgba(0, 255, 136, 0.7);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 1.2rem 2.5rem;
+            font-weight: 700;
+            font-size: 1rem;
+            font-family: 'Roboto Mono', monospace;
+            color: #ffffff;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #00ffff;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(0, 255, 255, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container { 
+                max-width: 95vw; 
+                padding: 1rem 0.5rem; 
+                margin: 1rem auto; 
+            }
+            
+            .navbar { padding: 1rem; }
+            .navbar-brand { font-size: 1rem; padding: 0.5rem 1rem; }
+            
+            .page-title { font-size: 2rem; }
+            .fish-name { font-size: 1.1rem; }
+            
+            .form-container { padding: 2rem 1.5rem; margin: 0 0.5rem; }
+            
+            .preview-image { width: 140px; height: 140px; }
+            .preview-video { width: 250px; height: 140px; }
+            
+            .form-buttons { flex-direction: column; }
+            .btn-primary, .btn-secondary { width: 100%; max-width: 300px; }
+        }
+
+        @media (max-width: 480px) {
+            .page-title { font-size: 1.7rem; }
+            .form-container { padding: 1.5rem 1rem; }
+            .preview-image { width: 120px; height: 120px; }
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="/home">← Dashboard</a>
-        </div>
+    <!-- Animated Particles -->
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- Pure CSS Navbar -->
+    <nav class="navbar">
+        <a href="/home" class="navbar-brand">
+            <i class="fas fa-arrow-left me-2"></i>Dashboard
+        </a>
     </nav>
 
-    <div class="container mt-5">
-        <h2>Edit Fish: <%= fish.name %></h2>
-        <% if (error) { %>
-            <div class="alert alert-danger">
-                <% Object.values(error).forEach(err => { %>
-                    <div><%= err.message %></div>
-                <% }) %>
-            </div>
+    <div class="container">
+        <h2 class="page-title">
+            <i class="fas fa-edit me-3"></i>Edit Fish
+        </h2>
+        <h3 class="fish-name"><%= fish.name %></h3>
+
+        <% if (typeof error !== 'undefined' && error) { %>
+        <div class="error-alert">
+            <% Object.values(error).forEach(err => { %>
+                <div><%= err.message %></div>
+            <% }) %>
+        </div>
         <% } %>
 
-        <!-- ✅ FILE UPLOAD FORM - enctype REQUIRED -->
-        <form method="POST" enctype="multipart/form-data">
-            <div class="mb-3">
-                <label class="form-label">Name</label>
-                <input type="text" class="form-control" name="name" value="<%= fish.name %>" required>
+        <!-- FILE UPLOAD FORM -->
+        <form method="POST" enctype="multipart/form-data" class="form-container">
+            <div class="form-group">
+                <label class="form-label">Fish Name</label>
+                <input type="text" class="form-input" name="name" value="<%= fish.name %>" placeholder="Enter fish name..." required>
             </div>
-            
-            <!-- ✅ CURRENT PHOTO PREVIEW -->
+
+            <!-- CURRENT PHOTO PREVIEW -->
             <% if (fish.photo) { %>
-                <div class="mb-3">
-                    <label class="form-label">Current Photo:</label>
-                    <img src="<%= fish.photo %>" class="img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;">
-                    <div class="form-text">Current photo will be replaced if new file uploaded</div>
-                </div>
+            <div class="media-preview">
+                <label class="form-label">Current Photo:</label>
+                <img src="<%= fish.photo %>" class="preview-image" alt="<%= fish.name %>">
+                <div class="form-text">Will be replaced if new photo uploaded</div>
+            </div>
             <% } %>
-            
-            <!-- ✅ NEW PHOTO UPLOAD (OPTIONAL) -->
-            <div class="mb-3">
+
+            <!-- NEW PHOTO UPLOAD -->
+            <div class="form-group">
                 <label class="form-label">New Photo (optional)</label>
-                <input type="file" class="form-control" name="photo" accept="image/*">
+                <div class="file-input-wrapper">
+                    <input type="file" class="form-input" name="photo" accept="image/*">
+                    <div class="file-input-label">
+                        <i class="fas fa-camera"></i>
+                        Upload New Photo
+                    </div>
+                </div>
                 <div class="form-text">JPG, PNG, WEBP (Max 10MB) - Leave empty to keep current</div>
             </div>
-            
-            <!-- ✅ CURRENT VIDEO PREVIEW -->
+
+            <!-- CURRENT VIDEO PREVIEW -->
             <% if (fish.video) { %>
-                <div class="mb-3">
-                    <label class="form-label">Current Video:</label>
-                    <video width="200" controls class="mt-2">
-                        <source src="<%= fish.video %>" type="video/mp4">
-                    </video>
-                    <div class="form-text">Current video will be replaced if new file uploaded</div>
-                </div>
+            <div class="media-preview">
+                <label class="form-label">Current Video:</label>
+                <video class="preview-video" controls preload="metadata">
+                    <source src="<%= fish.video %>" type="video/mp4">
+                </video>
+                <div class="form-text">Will be replaced if new video uploaded</div>
+            </div>
             <% } %>
-            
-            <!-- ✅ NEW VIDEO UPLOAD (OPTIONAL) -->
-            <div class="mb-3">
+
+            <!-- NEW VIDEO UPLOAD -->
+            <div class="form-group">
                 <label class="form-label">New Video (optional)</label>
-                <input type="file" class="form-control" name="video" accept="video/*">
+                <div class="file-input-wrapper">
+                    <input type="file" class="form-input" name="video" accept="video/*">
+                    <div class="file-input-label">
+                        <i class="fas fa-video"></i>
+                        Upload New Video
+                    </div>
+                </div>
                 <div class="form-text">MP4, MOV (Max 10MB) - Leave empty to keep current</div>
             </div>
-            
-            <div class="mb-3">
+
+            <div class="form-group">
                 <label class="form-label">Price (₹)</label>
-                <input type="number" class="form-control" name="price" value="<%= fish.price %>" step="0.01" min="0" required>
+                <input type="number" class="form-input" name="price" value="<%= fish.price %>" step="0.01" min="0" required>
             </div>
-            
-            <div class="mb-3">
-                <label class="form-label">Type</label>
-                <select class="form-control" name="type" required>
+
+            <div class="form-group">
+                <label class="form-label">Fish Type</label>
+                <select class="form-select" name="type" required>
                     <option value="Freshwater" <%= fish.type === 'Freshwater' ? 'selected' : '' %>>Freshwater</option>
                     <option value="Saltwater" <%= fish.type === 'Saltwater' ? 'selected' : '' %>>Saltwater</option>
                     <option value="Goldfish" <%= fish.type === 'Goldfish' ? 'selected' : '' %>>Goldfish</option>
                     <option value="Tropical" <%= fish.type === 'Tropical' ? 'selected' : '' %>>Tropical</option>
+                    <option value="Ornamental" <%= fish.type === 'Ornamental' ? 'selected' : '' %>>Ornamental</option>
                 </select>
             </div>
-            
-            <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-primary">📸 Update Fish</button>
-                <a href="/home" class="btn btn-secondary">Cancel</a>
+
+            <div class="form-buttons">
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-save me-2"></i>
+                    Update Fish
+                </button>
+                <a href="/home" class="btn-secondary">
+                    <i class="fas fa-times me-2"></i>
+                    Cancel
+                </a>
             </div>
         </form>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // File input styling
+            document.querySelectorAll('.file-input-wrapper').forEach(wrapper => {
+                const input = wrapper.querySelector('input[type=file]');
+                const label = wrapper.querySelector('.file-input-label');
+                
+                input.addEventListener('change', function() {
+                    if (this.files.length > 0) {
+                        label.innerHTML = `
+                            <i class="fas fa-check-circle" style="color: #00ff88;"></i>
+                            ${this.files[0].name}
+                        `;
+                        label.style.color = '#00ff88';
+                        label.style.borderColor = '#00ff88';
+                    }
+                });
+            });
+
+            // Smooth page load
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.8s ease';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 150);
+
+            // Form glow effect
+            const form = document.querySelector('.form-container');
+            form.addEventListener('mouseenter', () => {
+                form.style.boxShadow = '0 30px 70px rgba(0, 255, 255, 0.2)';
+            });
+            form.addEventListener('mouseleave', () => {
+                form.style.boxShadow = '0 25px 60px rgba(0, 0, 0, 0.5)';
+            });
+        });
+    </script>
 </body>
 </html>

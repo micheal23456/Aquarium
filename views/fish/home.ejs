@@ -2,86 +2,901 @@
 <html>
 <head>
     <title>Fish Admin Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 30%, #16213e 70%, #0f0f23 100%);
+            background-attachment: fixed;
+            font-family: 'Roboto Mono', monospace;
+            color: #e0e0e0;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background Grid */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(0,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,255,255,0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 30s linear infinite;
+            z-index: 1;
+            opacity: 0.4;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Floating Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(0,255,255,0.8) 1px, transparent 1px);
+            border-radius: 50%;
+            animation: float 25s infinite linear;
+        }
+
+        .particle:nth-child(1) { width: 3px; height: 3px; top: 20%; left: 10%; animation-delay: 0s; }
+        .particle:nth-child(2) { width: 2px; height: 2px; top: 60%; right: 20%; animation-delay: 8s; }
+        .particle:nth-child(3) { width: 4px; height: 4px; bottom: 30%; left: 5%; animation-delay: 15s; }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* ENHANCED NAVBAR WITH MOBILE DROPDOWN */
+        .navbar {
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            font-family: 'Orbitron', monospace;
+            font-weight: 900;
+            font-size: 1.8rem;
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        /* DESKTOP NAV LINKS */
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-link {
+            color: #00ffff !important;
+            font-weight: 500;
+            padding: 0.75rem 1.25rem;
+            margin: 0 0.25rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-family: 'Roboto Mono', monospace;
+            text-decoration: none;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-link:hover {
+            color: #ffffff !important;
+            background: rgba(0, 255, 255, 0.1);
+            text-shadow: 0 0 10px #00ffff;
+            transform: translateY(-2px);
+        }
+
+        /* MOBILE HAMBURGER BUTTON */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 0.5rem;
+            z-index: 1001;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: #00ffff;
+            margin: 3px 0;
+            transition: 0.3s;
+            border-radius: 2px;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        /* MOBILE MENU */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80%;
+            max-width: 350px;
+            height: 100vh;
+            background: rgba(20, 20, 45, 0.98);
+            backdrop-filter: blur(25px);
+            border-left: 2px solid rgba(0, 255, 255, 0.4);
+            transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            z-index: 999;
+            padding: 5rem 2rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .mobile-menu.active {
+            right: 0;
+        }
+
+        .mobile-menu::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: -1;
+        }
+
+        .mobile-nav-link {
+            color: #00ffff;
+            font-weight: 500;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-family: 'Roboto Mono', monospace;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        .mobile-nav-link:hover {
+            color: #ffffff;
+            background: rgba(0, 255, 255, 0.15);
+            text-shadow: 0 0 15px #00ffff;
+            transform: translateX(8px);
+        }
+
+        .count-badge {
+            background: linear-gradient(45deg, #ff00ff, #00ffff);
+            color: #000;
+            border-radius: 12px;
+            padding: 0.25rem 0.75rem;
+            font-weight: 700;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+            animation: pulse 2s infinite;
+            white-space: nowrap;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 10px rgba(0, 255, 255, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(255, 0, 255, 0.8); }
+        }
+
+        .navbar-btn {
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: transparent;
+            color: #ffffff !important;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-family: 'Roboto Mono', monospace;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .navbar-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #00ffff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 255, 255, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #00ff88, #00cc88);
+            border: none;
+            color: #000 !important;
+            font-weight: 700;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-family: 'Roboto Mono', monospace;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.4);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.6);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Header */
+        .dashboard-header {
+            background: rgba(20, 20, 45, 0.5);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        h2 {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            background: linear-gradient(45deg, #00ffff, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 1px;
+            margin: 0;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-info {
+            background: linear-gradient(45deg, #00bfff, #0080ff);
+            border: none;
+            color: #fff;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-family: 'Roboto Mono', monospace;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(0, 191, 255, 0.4);
+        }
+
+        /* Search Form */
+        .search-container {
+            background: rgba(20, 20, 40, 0.9);
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            overflow: hidden;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            margin-bottom: 2rem;
+            display: flex;
+        }
+
+        .search-input {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-family: 'Roboto Mono', monospace;
+            padding: 1.25rem 1.5rem;
+            font-size: 1rem;
+            flex: 1;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .search-btn {
+            background: linear-gradient(45deg, #00ffff, #0080ff);
+            border: none;
+            color: #fff;
+            font-weight: 600;
+            padding: 1.25rem 2rem;
+            transition: all 0.3s ease;
+            font-family: 'Roboto Mono', monospace;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 147, 255, 0.4);
+        }
+
+        /* Fish Grid */
+        .fish-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: rgba(20, 20, 45, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            height: 100%;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #00ffff, #ff00ff, #00ff00, #00ffff);
+            background-size: 300% 100%;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 30px 60px rgba(0, 255, 255, 0.3);
+            border-color: rgba(0, 255, 255, 0.6);
+        }
+
+        .card-img-top {
+            height: 220px;
+            width: 100%;
+            object-fit: cover;
+            transition: all 0.4s ease;
+            filter: brightness(0.8) contrast(1.1);
+        }
+
+        .card:hover .card-img-top {
+            filter: brightness(1) contrast(1.2);
+            transform: scale(1.05);
+        }
+
+        .card-no-image {
+            height: 220px;
+            background: linear-gradient(45deg, #1a1a2e, #16213e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+            font-size: 1.25rem;
+        }
+
+        .card-type {
+            color: rgba(0, 255, 255, 0.8) !important;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-price {
+            font-family: 'Orbitron', monospace;
+            font-weight: 900;
+            font-size: 1.4rem;
+            background: linear-gradient(45deg, #00ff88, #00ffcc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .card-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-sm {
+            border-radius: 10px;
+            font-weight: 500;
+            padding: 0.6rem 1rem;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            border: none;
+            flex: 1;
+            min-width: 80px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-warning {
+            background: linear-gradient(45deg, #ffaa00, #ff6600);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(255, 170, 0, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #ff4444, #cc0000);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(255, 68, 68, 0.4);
+        }
+
+        .btn-sm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(15px);
+            z-index: 1500;
+            padding: 2rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-container {
+            background: rgba(20, 20, 45, 0.99);
+            backdrop-filter: blur(30px);
+            border: 2px solid rgba(0, 255, 255, 0.6);
+            border-radius: 20px;
+            box-shadow: 0 0 100px rgba(0, 255, 255, 0.5);
+            width: 90vw;
+            max-width: 1200px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .modal-header {
+            background: rgba(15, 15, 35, 0.95);
+            border-radius: 20px 20px 0 0;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .modal-title {
+            color: #00ffff !important;
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            margin: 0;
+            font-size: 1.3rem;
+        }
+
+        .modal-close {
+            width: 3rem !important;
+            height: 3rem !important;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff4444, #ff6666) !important;
+            border: 4px solid #ff8888 !important;
+            color: #ffffff !important;
+            font-size: 1.5rem !important;
+            font-weight: 900 !important;
+            cursor: pointer;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            box-shadow: 0 6px 25px rgba(255, 68, 68, 0.8) !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .modal-close:hover {
+            background: linear-gradient(45deg, #ff6666, #ff8888) !important;
+            transform: scale(1.2) rotate(90deg) !important;
+            box-shadow: 0 10px 40px rgba(255, 68, 68, 1) !important;
+        }
+
+        .modal-body {
+            flex: 1;
+            padding: 0;
+            overflow: auto;
+            position: relative;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+        }
+
+        .modal-video {
+            width: 100%;
+            height: auto;
+            max-height: 70vh;
+            max-width: 100%;
+            object-fit: contain;
+            display: block;
+            background: #000;
+            touch-action: manipulation;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .navbar {
+                padding: 1rem;
+            }
+
+            .navbar-brand {
+                font-size: 1.5rem;
+            }
+
+            .container { 
+                padding: 1rem; 
+            }
+
+            .fish-grid { 
+                grid-template-columns: 1fr; 
+                gap: 1.5rem; 
+            }
+
+            .dashboard-header { 
+                flex-direction: column; 
+                text-align: center; 
+                padding: 1.5rem; 
+            }
+
+            .modal-overlay {
+                padding: 6rem 1rem 1rem 1rem !important;
+            }
+            
+            .modal-container {
+                width: 98vw !important;
+                max-height: 80vh !important;
+                margin: 0 auto !important;
+            }
+            
+            .modal-close {
+                width: 3.5rem !important;
+                height: 3.5rem !important;
+                font-size: 1.8rem !important;
+            }
+            
+            .modal-video {
+                max-height: 60vh !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar-brand { font-size: 1.4rem; }
+            .card-img-top { height: 180px; }
+            .modal-overlay { padding-top: 7rem !important; }
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="/home">🐟 Fish Admin</a>
+    <!-- Animated Particles -->
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- ENHANCED NAVBAR WITH MOBILE DROPDOWN -->
+    <nav class="navbar">
+        <a href="/home" class="navbar-brand">
+            <i class="fas fa-fish me-2"></i>Fish Admin
+        </a>
+
+        <!-- DESKTOP NAV LINKS -->
+        <div class="nav-links">
             <a href="/orders" class="nav-link">
-             📦 Orders (<%= ordersCount || 0 %>)
+                <i class="fas fa-box me-1"></i>Orders
+                <span class="count-badge">(<%= ordersCount || 0 %>)</span>
             </a>
-            <div class="navbar-nav ms-auto">
-                <a class="btn btn-outline-light ms-2" href="/logout">Logout</a>
-            </div>
+            <a href="/userlist" class="nav-link">
+                <i class="fas fa-users me-1"></i>👥 Manage Users
+            </a>
+            <a href="/logout" class="navbar-btn">
+                <i class="fas fa-sign-out-alt me-1"></i>Logout
+            </a>
+            <a href="/retrieve_fish" class="navbar-btn btn-success">
+                <i class="fas fa-plus me-2"></i>All items
+            </a>
+        </div>
+
+        <!-- MOBILE HAMBURGER -->
+        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
     </nav>
 
-    <div class="container mt-4">
-        <div class="d-flex justify-content-between mb-4">
-            <h2>Fish Catalog (<%= fishes.length %>)</h2>
-            <div>
-                <a href="/userlist" class="btn btn-info me-2">👥 Manage Users</a>
-                <a href="/create_fish" class="btn btn-success">+ Add Fish</a>
+    <!-- MOBILE SIDEBAR DROPDOWN -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="/orders" class="mobile-nav-link">
+            <i class="fas fa-box"></i>Orders
+            <span class="count-badge">(<%= ordersCount || 0 %>)</span>
+        </a>
+        <a href="/userlist" class="mobile-nav-link">
+            <i class="fas fa-users"></i>👥 Manage Users
+        </a>
+        <a href="/logout" class="mobile-nav-link">
+            <i class="fas fa-sign-out-alt"></i>Logout
+        </a>
+        <a href="/retrieve_fish" class="mobile-nav-link btn-success">
+            <i class="fas fa-plus"></i>All items
+        </a>
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <h2><i class="fas fa-fish me-2"></i>Fish Catalog (<%= fishes.length %>)</h2>
+            <div class="header-buttons">
+                <a href="/userlist" class="btn-info">
+                    <i class="fas fa-users me-1"></i>👥 Manage Users
+                </a>
+                <a href="/create_fish" class="btn-success">
+                    <i class="fas fa-plus me-1"></i>Add Fish
+                </a>
             </div>
         </div>
 
         <!-- Search Form -->
-        <form method="GET" class="mb-4">
-            <div class="input-group">
-                <input type="text" name="search" class="form-control" value="<%= search %>" placeholder="Search fish...">
-                <button class="btn btn-primary">Search</button>
-            </div>
+        <form method="GET" class="search-container">
+            <input type="text" name="search" class="search-input" value="<%= search %>" placeholder="🔍 Search fish by name or type...">
+            <button type="submit" class="search-btn">
+                <i class="fas fa-magnifying-glass"></i>Search
+            </button>
         </form>
 
-        <!-- Fish Cards -->
-        <div class="row">
+        <!-- Fish Grid -->
+        <% if (fishes.length > 0) { %>
+        <div class="fish-grid">
             <% fishes.forEach(fish => { %>
-                <div class="col-md-4 mb-4">
-                    <div class="card">
-                        <% if (fish.photo) { %>
-                            <img src="<%= fish.photo %>" class="card-img-top" style="height: 200px; object-fit: cover;">
-                        <% } %>
-                        <div class="card-body">
-                            <h5 class="card-title"><%= fish.name %></h5>
-                            <p class="text-muted"><%= fish.type %></p>
-                            <p class="fw-bold text-success">₹<%= fish.price %></p>
-                            <div class="d-flex gap-2 flex-wrap">
-                                <a href="/update_fish/<%= fish._id %>" class="btn btn-sm btn-warning">Edit</a>
-                                <a href="/delete_fish/<%= fish._id %>" class="btn btn-sm btn-danger">Delete</a>
-                                <% if (fish.video) { %>
-                                    <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#videoModal<%= fish._id %>">
-                                        ▶️ Video
-                                    </button>
-                                <% } %>
-                            </div>
-                        </div>
+            <div class="card">
+                <% if (fish.photo) { %>
+                    <img src="<%= fish.photo %>" class="card-img-top" alt="<%= fish.name %>">
+                <% } else { %>
+                    <div class="card-no-image">
+                        <i class="fas fa-fish" style="font-size: 4rem; color: rgba(0, 191, 255, 0.2);"></i>
                     </div>
-                </div>
-
-                <!-- Video Modal -->
-                <% if (fish.video) { %>
-                <div class="modal fade" id="videoModal<%= fish._id %>" tabindex="-1">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title"><%= fish.name %> - Video</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                            </div>
-                            <div class="modal-body">
-                                <video controls class="w-100" style="max-height: 500px;">
-                                    <source src="<%= fish.video %>" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <% } %>
+                <div class="card-body">
+                    <h5 class="card-title"><%= fish.name %></h5>
+                    <p class="card-type"><i class="fas fa-tag me-1"></i><%= fish.type %></p>
+                    <p class="card-price">₹<%= fish.price %></p>
+                    <div class="card-buttons">
+                        <a href="/update_fish/<%= fish._id %>" class="btn-sm btn-warning">
+                            <i class="fas fa-edit"></i>Edit
+                        </a>
+                        <a href="/delete_fish/<%= fish._id %>" class="btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete <%= fish.name %>?')">
+                            <i class="fas fa-trash"></i>Delete
+                        </a>
+                        <% if (fish.video) { %>
+                            <button class="btn-sm btn-info video-trigger" data-modal="videoModal<%= fish._id %>">
+                                <i class="fas fa-play"></i>Video
+                            </button>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIDEO MODAL -->
+            <% if (fish.video) { %>
+            <div class="modal-overlay" id="videoModal<%= fish._id %>">
+                <div class="modal-container">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="fas fa-fish me-2"></i><%= fish.name %> - Video Preview
+                        </h5>
+                        <div class="modal-close" onclick="closeModal('videoModal<%= fish._id %>')">
+                            <i class="fas fa-times"></i>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <video class="modal-video" controls preload="metadata">
+                            <source src="<%= fish.video %>" type="video/mp4">
+                            <source src="<%= fish.video %>" type="video/webm">
+                            <source src="<%= fish.video %>" type="video/ogg">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+            </div>
+            <% } %>
             <% }) %>
         </div>
+        <% } else { %>
+        <div class="empty-state">
+            <i class="fas fa-fish fa-5x" style="color: rgba(0, 255, 255, 0.3);"></i>
+            <h3 style="color: rgba(0, 255, 255, 0.8);">No fishes found</h3>
+            <p style="color: rgba(255, 255, 255, 0.6);">Try adjusting your search or add new fishes</p>
+            <a href="/create_fish" class="btn-success" style="padding: 1rem 2rem; font-size: 1.1rem;">
+                <i class="fas fa-plus me-2"></i>Add First Fish
+            </a>
+        </div>
+        <% } %>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // MOBILE MENU TOGGLE
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const hamburger = document.getElementById('hamburger');
+            menu.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        }
+
+        // Close mobile menu on link click
+        document.querySelectorAll('.mobile-nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('mobileMenu').classList.remove('active');
+                document.getElementById('hamburger').classList.remove('active');
+            });
+        });
+
+        // Close mobile menu on overlay click
+        document.getElementById('mobileMenu').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+                document.getElementById('hamburger').classList.remove('active');
+            }
+        });
+
+        // VIDEO MODALS
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.video-trigger').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const modalId = this.getAttribute('data-modal');
+                    const modal = document.getElementById(modalId);
+                    modal.classList.add('active');
+                    setTimeout(() => {
+                        const video = modal.querySelector('video');
+                        if (video) video.focus();
+                    }, 100);
+                });
+            });
+
+            document.querySelectorAll('.modal-overlay').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeModalOverlay(modal.id);
+                    }
+                });
+
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && modal.classList.contains('active')) {
+                        closeModalOverlay(modal.id);
+                    }
+                });
+            });
+
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.8s ease';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+
+        function closeModalOverlay(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('active');
+            const video = modal.querySelector('video');
+            if (video) {
+                video.pause();
+                video.currentTime = 0;
+            }
+        }
+
+        function closeModal(modalId) {
+            closeModalOverlay(modalId);
+        }
+    </script>
 </body>
 </html>
