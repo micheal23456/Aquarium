@@ -7,8 +7,7 @@ async function connectDB() {
   try {
     await mongoose.connect(mongoURI, {
       serverApi: { version: '1', strict: true, deprecationErrors: true },
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+      // ⛔ DO NOT include useNewUrlParser or useUnifiedTopology here
     });
     console.log('✅ MongoDB Connected');
   } catch (err) {
