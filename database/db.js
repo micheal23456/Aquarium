@@ -1,19 +1,17 @@
-// database/db.js
 const mongoose = require('mongoose');
 
+// Use environment variable OR fallback to localhost
 const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/Myaqua';
 
-async function connectDB() {
-  try {
-    await mongoose.connect(mongoURI, {
-      serverApi: { version: '1', strict: true, deprecationErrors: true },
-      // ⛔ DO NOT include useNewUrlParser or useUnifiedTopology here
-    });
-    console.log('✅ MongoDB Connected');
-  } catch (err) {
-    console.error('❌ MongoDB connection error:', err);
-    throw err; // app.js will catch this
-  }
-}
+mongoose.connect(mongoURI)
+  .then(() => console.log('✅ MongoDB Connected'))
+  .catch(err => console.log('MongoDB connection error:', err));
 
-module.exports = connectDB;
+const db = mongoose.connection;
+
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+db.once('open', () => {
+  console.log('✅ Connected to MongoDB');
+});
+
+module.exports = db;
